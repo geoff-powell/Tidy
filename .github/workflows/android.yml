@@ -11,8 +11,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-number:
+    uses: ./.github/workflows/build-number.yml
+
   build-debug:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
 

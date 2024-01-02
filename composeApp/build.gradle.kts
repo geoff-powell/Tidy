@@ -82,8 +82,8 @@ android {
     applicationId = "com.greenmiststudios.tidy"
     minSdk = libs.versions.android.minSdk.get().toInt()
     targetSdk = libs.versions.android.targetSdk.get().toInt()
-    versionCode = libs.versions.versionCode.get().toInt()
-    versionName = libs.versions.version.get()
+    versionCode = project.properties["tidy.version_code"]?.toString()?.toInt() ?: 1
+    versionName = project.properties["tidy.version_name"]?.toString()
   }
   packaging {
     resources {
@@ -114,7 +114,7 @@ compose.desktop {
     nativeDistributions {
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
       packageName = "com.greenmiststudios.tidy"
-      packageVersion = libs.versions.version.get()
+      packageVersion = project.properties["tidy.version_name"]?.toString()
     }
   }
 }

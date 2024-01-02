@@ -1,0 +1,32 @@
+name: Build Number
+
+on:
+  workflow_call:
+    outputs:
+      build-number:
+        description: "The build number generated from git tags on current SHA."
+        value: ${{ jobs.build.outputs.build-number }}
+    inputs:
+      token:
+        description: 'GitHub token or PAT token'
+        required: false
+        default: ${{ github.token }}
+        type: string
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.build-number.outputs.build_number }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Generate build number
+      id: build-number
+      env:
+        INPUT_GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        ./scripts/build-number.sh

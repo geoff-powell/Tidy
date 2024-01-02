@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.greenmiststudios.tidy"
-version = "${libs.versions.version}-SNAPSHOT"
+version = "${project.properties["tidy.version_name"]?.toString()}-SNAPSHOT"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
