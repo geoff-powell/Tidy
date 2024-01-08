@@ -11,6 +11,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-number:
+    uses: ./.github/workflows/build-number.yml
+
   Build-Desktop:
     runs-on: ubuntu-latest
 

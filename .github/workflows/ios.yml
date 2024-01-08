@@ -4,15 +4,18 @@ on:
   push: 
     branches: 
       - main
-      - ios-upload-testflight # TODO: this is a temporary branch for testing (REMOVE)
+      - ci-version-code # TODO: this is a temporary branch for testing (REMOVE)
   pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-jobs: 
-  build: 
+jobs:
+  build-number:
+    uses: ./.github/workflows/build-number.yml
+
+  build:
     runs-on: macos-latest
     steps:
       - name: Check Xcode version
@@ -73,6 +76,20 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-home-cache-cleanup: true
+
+#     DEBUG: print out all environment variables
+      - name: Output Run ID
+        run: echo ${{ github.run_id }}
+      - name: Output Run Number
+        run: echo ${{ github.run_number }}
+      - name: Output Run Attempt
+        run: echo ${{ github.run_attempt }}
+
+
+
+      - name: Generate Version Code
+        run: |
+          echo "VERSION_CODE=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
 
       - name: Build Artifact with Xcode
         run: xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug -destination generic/platform=iOS -archivePath $RUNNER_TEMP/Tidy.xcarchive archive
