@@ -11,6 +11,22 @@ plugins {
 }
 
 val projectVersion = project.ext.get("version")?.toString()
+val osName = System.getProperty("os.name")!!
+val targetOs = when {
+  osName == "Mac OS X" -> "macos"
+  osName.startsWith("Win") -> "windows"
+  osName.startsWith("Linux") -> "linux"
+  else -> error("Unsupported OS: $osName")
+}
+
+val targetArch = when (val osArch = System.getProperty("os.arch")) {
+  "x86_64", "amd64" -> "x64"
+  "aarch64" -> "arm64"
+  else -> error("Unsupported arch: $osArch")
+}
+
+val targetPlatform = "${targetOs}-${targetArch}"
+println("Found target platform: $targetPlatform")
 
 kotlin {
   js(IR) {
@@ -60,6 +76,7 @@ kotlin {
     }
     desktopMain.dependencies {
       implementation(compose.desktop.currentOs)
+      implementation("org.jetbrains.skiko:skiko-awt-runtime-$targetPlatform:${libs.versions.skiko.get()}")
     }
     iosMain.dependencies {
     }
